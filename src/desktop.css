@@ -1,0 +1,24 @@
+/* Desktop shell, map controls, and trail legend. Mobile drawer behavior lives
+   in mobile-panel.css so the two layouts do not fight over the same elements. */
+
+.empty-detail{margin-top:10px;line-height:1.45}
+
+@media (min-width:801px){
+  aside{overflow:hidden}
+  .brand{flex:0 0 auto}
+  .brand-copy h1{font-family:"Avenir Next",Avenir,"Segoe UI",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,sans-serif;font-size:27px;font-weight:800;line-height:1.04;letter-spacing:-0.02em}
+  .brand-intro{font-family:"Avenir Next",Avenir,"Segoe UI",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,sans-serif;font-size:12.5px;font-weight:500;line-height:1.45;color:var(--muted)}
+  .sidebar-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-color:#c8ceca transparent}
+  .sidebar-scroll #list{flex:none;min-height:0;overflow:visible}
+  .sidebar-scroll::-webkit-scrollbar{width:10px}
+  .sidebar-scroll::-webkit-scrollbar-thumb{background:#c8ceca;border-radius:999px;border:3px solid transparent;background-clip:padding-box}
+  .map-wrap .legend{top:14px;right:14px}
+  .map-wrap .map-actions{top:auto;right:14px;bottom:30px;gap:8px;align-items:center}
+  #homeBtn,#locateBtn{width:42px;height:42px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.97)}
+  #homeBtn svg,#locateBtn svg{display:block;width:23px;height:23px;flex:0 0 auto}
+  #homeBtn span,#locateBtn span{display:none}
+  #resetBtn{height:42px;padding:0 14px;border-radius:999px;border:1px solid rgba(212,69,38,.22);background:rgba(255,255,255,.97);font-size:12px}
+  .map-actions .map-btn:hover{transform:translateY(-1px)}
+}
+
+.legend .legend-line.side{height:4px;border:0;border-radius:2px;background:repeating-linear-gradient(to right,var(--accent) 0 8px,transparent 8px 13px)}

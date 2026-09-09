@@ -1,0 +1,6 @@
+.detail-photo{width:100%;max-width:100%;margin:0 0 14px;overflow:hidden;border:1px solid var(--line);border-radius:12px;background:#eef4f6;box-sizing:border-box}
+.detail-photo[hidden]{display:none}
+.detail-photo img{display:block;width:100%;max-width:100%;height:180px;object-fit:cover}
+.sheet{scrollbar-color:#c8ceca transparent}
+.sheet::-webkit-scrollbar-track{margin-block:12px;background:transparent}
+@media(max-width:800px){.detail-photo{margin-bottom:12px}.detail-photo img{height:auto;object-fit:contain}}

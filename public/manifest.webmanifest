@@ -1,0 +1,10 @@
+{
+  "name": "Ridge Trail Passport",
+  "short_name": "Ridge Trail",
+  "description": "Explore Bay Area Ridge Trail segments and track your completion progress.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#003B5D",
+  "scope": "./"
+}

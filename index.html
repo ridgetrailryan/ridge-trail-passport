@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#003B5D" />
+  <meta name="description" content="Explore the Bay Area Ridge Trail and track your completed trail sections." />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <title>Ridge Trail Passport</title>
+</head>
+<body>
+  <div id="app">
+    <aside>
+      <div class="brand">
+        <div class="brand-lockup">
+          <div class="brand-copy">
+            <h1>Ridge Trail Passport</h1>
+            <div class="beta-badge">Beta</div>
+          </div>
+          <button
+            class="mobile-panel-toggle"
+            id="mobilePanelToggle"
+            type="button"
+            aria-expanded="false"
+            aria-controls="mobileBrowserContent"
+            aria-label="Expand section browser"
+          >
+            <span aria-hidden="true">⌄</span>
+          </button>
+        </div>
+
+        <div id="mobileBrowserContent">
+          <div class="sub brand-intro">Explore the Ridge Trail and keep track of where you've been.</div>
+
+          <div class="progress-card">
+            <div class="progress-top">
+              <div>
+                <div class="eyebrow">Completed</div>
+                <div class="big" id="countText">0 / 0</div>
+              </div>
+              <div class="pct" id="pctText">0%</div>
+            </div>
+            <div
+              class="bar"
+              id="progressTrack"
+              role="progressbar"
+              aria-label="Ridge Trail completion"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+            ><div id="progressBar"></div></div>
+            <div class="sub" id="mileText" style="margin-top:7px">0 miles completed</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-scroll">
+        <div class="tools">
+          <input id="search" type="search" placeholder="Search trail sections…" aria-label="Search trail sections" />
+          <div class="row">
+            <select id="county" aria-label="Filter by county"><option value="">All counties</option></select>
+            <select id="region" aria-label="Filter by region"><option value="">All regions</option></select>
+          </div>
+          <label class="toggle">
+            <input id="unfinished" type="checkbox" />
+            <span class="toggle-switch"></span>
+            <span>Uncompleted only</span>
+          </label>
+        </div>
+
+        <div id="list"></div>
+        <footer>Completion data is stored in this browser and keyed to the permanent Segment ID.</footer>
+      </div>
+    </aside>
+
+    <main class="map-wrap">
+      <div id="map" role="region" aria-label="Interactive Ridge Trail map"></div>
+
+      <div class="map-actions">
+        <button class="map-btn" id="homeBtn" type="button" aria-label="Return to the Bay Area overview" title="Home">
+          <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M4 10.5 12 4l8 6.5v8.25A1.25 1.25 0 0 1 18.75 20h-4.5v-5.5h-4.5V20h-4.5A1.25 1.25 0 0 1 4 18.75Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" />
+          </svg>
+          <span>Home</span>
+        </button>
+        <button class="map-btn" id="locateBtn" type="button" aria-label="Show my location" title="My location">
+          <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="5.25" fill="none" stroke="currentColor" stroke-width="1.8" />
+            <circle cx="12" cy="12" r="1.8" fill="currentColor" />
+            <path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+          <span>My location</span>
+        </button>
+        <button class="map-btn danger" id="resetBtn" type="button">Reset</button>
+      </div>
+
+      <div class="legend" aria-label="Trail type legend">
+        <div class="legend-title">Map key</div>
+        <div class="legend-row"><span class="legend-line"></span><span>Main Ridge Trail</span></div>
+        <div class="legend-row"><span class="legend-line side"></span><span>Side Ridge Trail</span></div>
+      </div>
+
+      <div class="status" id="status" role="status" aria-live="polite" aria-atomic="true"></div>
+      <div class="map-hint" id="mapHint">Tap a main Ridge Trail line to view details and mark it complete</div>
+
+      <section class="sheet" id="sheet" aria-labelledby="sheetTitle">
+        <button class="close" id="closeSheet" type="button" aria-label="Close">×</button>
+        <div class="eyebrow" id="sheetEyebrow">Trail section</div>
+        <h2 id="sheetTitle"></h2>
+        <div class="sheet-meta" id="sheetMeta"></div>
+        <div class="detail-photo" id="detailPhoto" hidden></div>
+        <div class="facts" id="facts"></div>
+        <div class="actions" id="sheetActions"></div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
