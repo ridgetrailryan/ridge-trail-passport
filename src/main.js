@@ -5,6 +5,12 @@ import "./mobile-panel.css";
 
 import { fetchTrailFeatures, uniqueValues, validateSegmentIds } from "./data.js";
 import { createRidgeMap } from "./map.js";
+import {
+  readCachedTrailFeatures,
+  registerServiceWorker,
+  sameTrailSnapshot,
+  writeCachedTrailFeatures
+} from "./offline.js";
 import { createProgressStore } from "./progress.js";
 import { createUI } from "./ui.js";
 import { isCompletionEligible } from "./trails.js";
@@ -12,6 +18,8 @@ import { $ } from "./utils.js";
 
 let features = [];
 let selectedObjectId = null;
+let refreshInFlight = null;
+let lastNetworkRefresh = 0;
 
 const progressStore = createProgressStore();
 
@@ -152,6 +160,116 @@ function initializeMobilePanelToggle() {
   });
 }
 
+function applyTrailFeatures(nextFeatures, { showQaWarning = false } = {}) {
+  const previousCounty = $("county").value;
+  const previousRegion = $("region").value;
+
+  features = nextFeatures;
+
+  if (
+    selectedObjectId != null &&
+    !features.some(
+      (feature) => feature?.properties?.OBJECTID === selectedObjectId
+    )
+  ) {
+    selectedObjectId = null;
+  }
+
+  const segmentIdQa = validateSegmentIds(features);
+  progressStore.setInvalidSegmentIds(segmentIdQa.duplicateSegmentIds);
+
+  if (!segmentIdQa.valid) {
+    console.warn("Segment_ID QA warning", segmentIdQa);
+
+    if (showQaWarning) {
+      const issues = [];
+
+      if (segmentIdQa.missingObjectIds.length) {
+        issues.push(
+          `${segmentIdQa.missingObjectIds.length} missing Segment ID${
+            segmentIdQa.missingObjectIds.length === 1 ? "" : "s"
+          }`
+        );
+      }
+
+      if (segmentIdQa.duplicateSegmentIds.length) {
+        issues.push(
+          `${segmentIdQa.duplicateSegmentIds.length} duplicate Segment ID${
+            segmentIdQa.duplicateSegmentIds.length === 1 ? "" : "s"
+          }`
+        );
+      }
+
+      ui.showStatus(
+        `Segment ID warning: ${issues.join(", ")}.`,
+        6000
+      );
+    }
+  }
+
+  const counties = uniqueValues(features, "County");
+  const regions = uniqueValues(features, "Region");
+
+  ui.populateSelect("county", counties);
+  ui.populateSelect("region", regions);
+
+  if (counties.includes(previousCounty)) $("county").value = previousCounty;
+  if (regions.includes(previousRegion)) $("region").value = previousRegion;
+
+  renderAll();
+}
+
+async function refreshTrailData({
+  showLoadError = false,
+  showQaWarning = false
+} = {}) {
+  if (refreshInFlight) return refreshInFlight;
+
+  refreshInFlight = (async () => {
+    try {
+      const freshFeatures = await fetchTrailFeatures();
+      lastNetworkRefresh = Date.now();
+
+      await writeCachedTrailFeatures(freshFeatures);
+
+      if (!sameTrailSnapshot(features, freshFeatures)) {
+        applyTrailFeatures(freshFeatures, { showQaWarning });
+      }
+    } catch (error) {
+      console.warn("Could not refresh Ridge Trail data", error);
+
+      if (showLoadError && features.length === 0) {
+        const message =
+          error instanceof Error ? error.message : "Please try again.";
+
+        ui.renderLoadError(message);
+        ui.showStatus("Could not load Ridge Trail data.", 5000);
+      }
+    } finally {
+      refreshInFlight = null;
+    }
+  })();
+
+  return refreshInFlight;
+}
+
+function initializeBackgroundRefresh() {
+  window.addEventListener("online", () => {
+    refreshTrailData({ showLoadError: features.length === 0 });
+  });
+
+  document.addEventListener("visibilitychange", () => {
+    const fiveMinutes = 5 * 60 * 1000;
+
+    if (
+      document.visibilityState === "visible" &&
+      Date.now() - lastNetworkRefresh > fiveMinutes
+    ) {
+      refreshTrailData({ showLoadError: features.length === 0 });
+    }
+  });
+}
+
 async function initialize() {
   initializeMobilePanelToggle();
 
@@ -177,52 +295,19 @@ async function initialize() {
     isDone: (properties) => progressStore.isDone(properties)
   });
 
-  try {
-    features = await fetchTrailFeatures();
+  const cachedFeatures = await readCachedTrailFeatures();
 
-    const segmentIdQa = validateSegmentIds(features);
-    progressStore.setInvalidSegmentIds(segmentIdQa.duplicateSegmentIds);
-
-    if (!segmentIdQa.valid) {
-      console.warn("Segment_ID QA warning", segmentIdQa);
-
-      const issues = [];
-
-      if (segmentIdQa.missingObjectIds.length) {
-        issues.push(
-          `${segmentIdQa.missingObjectIds.length} missing Segment ID${
-            segmentIdQa.missingObjectIds.length === 1 ? "" : "s"
-          }`
-        );
-      }
-
-      if (segmentIdQa.duplicateSegmentIds.length) {
-        issues.push(
-          `${segmentIdQa.duplicateSegmentIds.length} duplicate Segment ID${
-            segmentIdQa.duplicateSegmentIds.length === 1 ? "" : "s"
-          }`
-        );
-      }
-
-      ui.showStatus(
-        `Segment ID warning: ${issues.join(", ")}.`,
-        6000
-      );
-    }
-
-    ui.populateSelect("county", uniqueValues(features, "County"));
-    ui.populateSelect("region", uniqueValues(features, "Region"));
-
-    renderAll();
-  } catch (error) {
-    console.error(error);
-
-    const message =
-      error instanceof Error ? error.message : "Please try again.";
-
-    ui.renderLoadError(message);
-    ui.showStatus("Could not load Ridge Trail data.", 5000);
+  if (cachedFeatures?.length) {
+    applyTrailFeatures(cachedFeatures);
   }
+
+  await refreshTrailData({
+    showLoadError: true,
+    showQaWarning: true
+  });
+
+  initializeBackgroundRefresh();
 }
 
+registerServiceWorker();
 initialize();
