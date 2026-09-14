@@ -131,7 +131,7 @@
           <button class="help-close" id="closeHelp" type="button" aria-label="Close help">×</button>
           <div class="eyebrow">Ridge Trail Passport</div>
           <h2 id="helpTitle">Help & Install</h2>
-          <p class="help-intro">A quick guide to exploring the Ridge Trail, tracking your progress, and saving the Passport to your phone.</p>
+          <p class="help-intro">A quick guide to using the Ridge Trail Passport, saving it to your phone, and managing your progress.</p>
 
           <div class="help-section">
             <h3>Using the Passport</h3>
@@ -139,7 +139,7 @@
             <p><strong>Track your progress.</strong> When you complete a main Ridge Trail section, tap <strong>Mark this section complete</strong>. Your completed sections, mileage, and overall progress update automatically.</p>
             <p><strong>Find sections.</strong> Use search, County and Region filters, or turn on <strong>Uncompleted only</strong> to focus on sections you still have left.</p>
             <p><strong>Use your location.</strong> Tap the location button on the map to zoom to your current location. Your browser may ask for permission first.</p>
-            <p class="help-note"><strong>Your progress is saved on this device and browser.</strong> It does not currently sync between devices, and clearing browser or site data can erase it.</p>
+            <p class="help-note"><strong>Your progress is saved on this device and browser.</strong> Use Progress &amp; Backup below if you need to move it elsewhere.</p>
           </div>
 
           <div class="help-section">
@@ -170,20 +170,8 @@
           </div>
 
           <div class="help-section">
-            <h3>Progress &amp; Backup</h3>
-            <p>Your completed sections are saved on this device and browser. Export a backup before changing devices, browsers, or Passport web addresses.</p>
-            <div class="help-backup-actions">
-              <button class="help-backup-btn" id="exportProgressBtn" type="button">Export Progress</button>
-              <button class="help-backup-btn" id="importProgressBtn" type="button">Import Progress</button>
-            </div>
-            <div class="help-backup-status" id="progressBackupStatus" role="status" aria-live="polite" aria-atomic="true" hidden></div>
-            <input id="progressFileInput" type="file" accept=".json,application/json" hidden />
-            <p class="help-backup-note">Importing adds saved completions to your existing progress. It will not remove sections you've already completed.</p>
-          </div>
-
-          <div class="help-section">
             <h3>Companion Apps</h3>
-            <p>The Ridge Trail Passport helps you explore the full Ridge Trail network and keep track of where you've been. For planning and navigating individual outings, Ridge Trail information is also available through our partners:</p>
+            <p>For additional trip planning and navigation tools, Ridge Trail information is also available through our partners:</p>
             <div class="help-companion-grid">
               <div class="help-companion-card">
                 <h4>AllTrails</h4>
@@ -196,6 +184,18 @@
                 <a class="help-companion-link" id="farOutCompanionLink" href="https://faroutguides.com/" target="_blank" rel="noopener noreferrer">Open FarOut →</a>
               </div>
             </div>
+          </div>
+
+          <div class="help-section">
+            <h3>Progress &amp; Backup</h3>
+            <p>Your completed sections are saved on this device and browser. Export a backup before changing devices, browsers, or Passport web addresses.</p>
+            <div class="help-backup-actions">
+              <button class="help-backup-btn" id="exportProgressBtn" type="button">Export Progress</button>
+              <button class="help-backup-btn" id="importProgressBtn" type="button">Import Progress</button>
+            </div>
+            <div class="help-backup-status" id="progressBackupStatus" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+            <input id="progressFileInput" type="file" accept=".json,application/json" hidden />
+            <p class="help-backup-note">Importing adds saved completions to your existing progress. It will not remove sections you've already completed.</p>
           </div>
 
           <div class="help-section">
