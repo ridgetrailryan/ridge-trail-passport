@@ -132,6 +132,78 @@ test("malformed saved progress is ignored instead of breaking the app", () => {
   assert.equal(store.isDone({ Trail_Type: "Primary", Segment_ID: "SEG-001" }), false);
 });
 
+test("progress backup round-trips completed Segment IDs", () => {
+  const storage = new MemoryStorage();
+  const store = createProgressStore({ storage });
+  const first = { Trail_Type: "Primary", Segment_ID: "SEG-001" };
+  const second = { Trail_Type: "Restricted", Segment_ID: "SEG-002" };
+
+  store.toggle(first);
+  store.toggle(second);
+
+  const backup = store.exportData();
+  assert.equal(backup.app, "Ridge Trail Passport");
+  assert.equal(backup.version, 1);
+  assert.deepEqual(backup.completed.map((entry) => entry.segmentId), ["SEG-001", "SEG-002"]);
+
+  store.reset();
+  assert.equal(store.isDone(first), false);
+
+  const result = store.importData(backup);
+  assert.deepEqual(result, { added: 2, existing: 0, skipped: 0, saved: true });
+  assert.equal(store.isDone(first), true);
+  assert.equal(store.isDone(second), true);
+});
+
+test("progress import merges without removing existing or unknown Segment IDs", () => {
+  const storage = new MemoryStorage();
+  const store = createProgressStore({ storage });
+  const existing = { Trail_Type: "Primary", Segment_ID: "SEG-001" };
+  const unknown = { Trail_Type: "Primary", Segment_ID: "SEG-FUTURE" };
+
+  store.toggle(existing);
+
+  const result = store.importData({
+    app: "Ridge Trail Passport",
+    version: 1,
+    exportedAt: "2026-09-14T12:00:00.000Z",
+    completed: [
+      { segmentId: "SEG-001", completedAt: "2026-01-01T12:00:00.000Z" },
+      { segmentId: "SEG-FUTURE", completedAt: "2026-02-01T12:00:00.000Z" }
+    ]
+  });
+
+  assert.deepEqual(result, { added: 1, existing: 1, skipped: 0, saved: true });
+  assert.equal(store.isDone(existing), true);
+  assert.equal(store.isDone(unknown), true);
+});
+
+test("progress import rejects invalid backups and skips duplicate route IDs", () => {
+  const storage = new MemoryStorage();
+  const store = createProgressStore({ storage });
+
+  assert.throws(
+    () => store.importData({ app: "Something Else", version: 1, completed: [] }),
+    /valid Ridge Trail Passport progress backup/
+  );
+
+  store.setInvalidSegmentIds(["SEG-DUPLICATE"]);
+  const result = store.importData({
+    app: "Ridge Trail Passport",
+    version: 1,
+    completed: [
+      { segmentId: "SEG-DUPLICATE" },
+      { segmentId: "SEG-OK" },
+      { segmentId: "SEG-OK" },
+      { segmentId: "" }
+    ]
+  });
+
+  assert.deepEqual(result, { added: 1, existing: 0, skipped: 3, saved: true });
+  assert.equal(store.isDone({ Trail_Type: "Primary", Segment_ID: "SEG-DUPLICATE" }), false);
+  assert.equal(store.isDone({ Trail_Type: "Primary", Segment_ID: "SEG-OK" }), true);
+});
+
 test("external links accept only http and https URLs", () => {
   assert.equal(normalizeUrl(" https://ridgetrail.org/path "), "https://ridgetrail.org/path");
   assert.equal(normalizeUrl("javascript:alert(1)"), null);
