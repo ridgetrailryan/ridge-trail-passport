@@ -2,6 +2,7 @@ import "./styles.css";
 import "./detail-photo.css";
 import "./desktop.css";
 import "./mobile-panel.css";
+import "./help.css";
 
 import { fetchTrailFeatures, uniqueValues, validateSegmentIds } from "./data.js";
 import { createRidgeMap } from "./map.js";
@@ -160,6 +161,40 @@ function initializeMobilePanelToggle() {
   });
 }
 
+function initializeHelpPanel() {
+  const button = $("helpBtn");
+  const backdrop = $("helpBackdrop");
+  const panel = $("helpPanel");
+  const closeButton = $("closeHelp");
+
+  if (!button || !backdrop || !panel || !closeButton) return;
+
+  function openHelp() {
+    backdrop.hidden = false;
+    closeButton.focus();
+  }
+
+  function closeHelp() {
+    if (backdrop.hidden) return;
+    backdrop.hidden = true;
+    button.focus();
+  }
+
+  button.addEventListener("click", openHelp);
+  closeButton.addEventListener("click", closeHelp);
+
+  backdrop.addEventListener("click", (event) => {
+    if (event.target === backdrop) closeHelp();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !backdrop.hidden) {
+      event.preventDefault();
+      closeHelp();
+    }
+  });
+}
+
 function applyTrailFeatures(nextFeatures, { showQaWarning = false } = {}) {
   const previousCounty = $("county").value;
   const previousRegion = $("region").value;
@@ -272,6 +307,7 @@ function initializeBackgroundRefresh() {
 
 async function initialize() {
   initializeMobilePanelToggle();
+  initializeHelpPanel();
 
   ui = createUI({
     progressStore,
