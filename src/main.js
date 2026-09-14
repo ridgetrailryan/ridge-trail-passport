@@ -195,6 +195,31 @@ function initializeHelpPanel() {
   });
 }
 
+function initializeCompanionLinks() {
+  const allTrailsLink = $("allTrailsCompanionLink");
+  const farOutLink = $("farOutCompanionLink");
+
+  if (!allTrailsLink || !farOutLink) return;
+
+  const userAgent = navigator.userAgent || "";
+  const isIOS =
+    /iPad|iPhone|iPod/i.test(userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/i.test(userAgent);
+
+  if (isIOS || isAndroid) {
+    allTrailsLink.href = "https://www.alltrails.com/welcome";
+  }
+
+  if (isIOS) {
+    farOutLink.href =
+      "https://apps.apple.com/us/app/farout-hike-bike-paddle/id605447532";
+  } else if (isAndroid) {
+    farOutLink.href =
+      "https://play.google.com/store/apps/details?id=com.atlasguides.guthook";
+  }
+}
+
 function applyTrailFeatures(nextFeatures, { showQaWarning = false } = {}) {
   const previousCounty = $("county").value;
   const previousRegion = $("region").value;
@@ -308,6 +333,7 @@ function initializeBackgroundRefresh() {
 async function initialize() {
   initializeMobilePanelToggle();
   initializeHelpPanel();
+  initializeCompanionLinks();
 
   ui = createUI({
     progressStore,
