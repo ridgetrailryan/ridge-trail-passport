@@ -207,14 +207,14 @@ function initializeCompanionLinks() {
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const isAndroid = /Android/i.test(userAgent);
 
-  if (isIOS || isAndroid) {
-    allTrailsLink.href = "https://www.alltrails.com/welcome";
-  }
-
   if (isIOS) {
+    allTrailsLink.href =
+      "https://apps.apple.com/us/app/alltrails-hike-bike-run/id405075943";
     farOutLink.href =
       "https://apps.apple.com/us/app/farout-hike-bike-paddle/id605447532";
   } else if (isAndroid) {
+    allTrailsLink.href =
+      "https://play.google.com/store/apps/details?id=com.alltrails.alltrails";
     farOutLink.href =
       "https://play.google.com/store/apps/details?id=com.atlasguides.guthook";
   }
