@@ -16,6 +16,12 @@
 .help-install-card{border:1px solid var(--line);border-radius:13px;background:#FAFCFD;padding:12px 13px}
 .help-install-card h4{margin:0 0 7px;font-size:13px;color:var(--rt-dark-blue)}
 .help-install-card ol{margin:0;padding-left:19px;color:#385669;font-size:12.5px;line-height:1.55}
+.help-companion-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+.help-companion-card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:13px;background:#FAFCFD;padding:13px}
+.help-companion-card h4{margin:0 0 5px;font-size:13px;color:var(--rt-dark-blue)}
+.help-companion-card p{margin:0 0 12px;font-size:12.5px;line-height:1.5}
+.help-companion-link{display:inline-flex;align-items:center;justify-content:center;margin-top:auto;border:1px solid #B8DEE6;border-radius:10px;padding:9px 11px;background:white;color:var(--rt-dark-blue);text-decoration:none;font-size:12px;font-weight:800}
+.help-companion-link:hover{background:#F2FAFB;border-color:var(--rt-sky-blue)}
 .help-note{margin-top:10px!important;padding:10px 11px;border-radius:10px;background:#EAF6F8;color:var(--rt-dark-blue)!important}
 .help-beta{margin-bottom:0!important;color:var(--muted)!important}
 
@@ -28,5 +34,5 @@
   .help-panel{width:100%;max-height:min(78dvh,680px);border-radius:18px;padding:20px 18px 18px}
   .help-panel h2{font-size:23px}
   .help-intro{margin-bottom:16px}
-  .help-install-grid{grid-template-columns:1fr}
+  .help-install-grid,.help-companion-grid{grid-template-columns:1fr}
 }
