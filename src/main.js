@@ -220,6 +220,98 @@ function initializeCompanionLinks() {
   }
 }
 
+function initializeProgressBackup() {
+  const exportButton = $("exportProgressBtn");
+  const importButton = $("importProgressBtn");
+  const fileInput = $("progressFileInput");
+
+  if (!exportButton || !importButton || !fileInput) return;
+
+  exportButton.addEventListener("click", () => {
+    const backup = progressStore.exportData();
+
+    if (backup.completed.length === 0) {
+      ui.showStatus("No completed sections to export yet.");
+      return;
+    }
+
+    const blob = new Blob(
+      [JSON.stringify(backup, null, 2)],
+      { type: "application/json" }
+    );
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const date = new Date().toISOString().slice(0, 10);
+
+    link.href = url;
+    link.download = `ridge-trail-passport-progress-${date}.json`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    ui.showStatus(
+      `Exported ${backup.completed.length} completed section${
+        backup.completed.length === 1 ? "" : "s"
+      }.`
+    );
+  });
+
+  importButton.addEventListener("click", () => {
+    fileInput.value = "";
+    fileInput.click();
+  });
+
+  fileInput.addEventListener("change", async () => {
+    const file = fileInput.files?.[0];
+    if (!file) return;
+
+    if (file.size > 1024 * 1024) {
+      ui.showStatus("That progress backup file is too large.", 4500);
+      fileInput.value = "";
+      return;
+    }
+
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      const result = progressStore.importData(data);
+
+      if (!result.saved) {
+        throw new Error("Could not save imported progress on this device.");
+      }
+
+      renderAll();
+
+      const parts = [
+        result.added === 0
+          ? "No new completions imported."
+          : `Imported ${result.added} new completed section${result.added === 1 ? "" : "s"}.`
+      ];
+
+      if (result.existing > 0) {
+        parts.push(`${result.existing} already complete.`);
+      }
+
+      if (result.skipped > 0) {
+        parts.push(`${result.skipped} invalid entr${result.skipped === 1 ? "y" : "ies"} skipped.`);
+      }
+
+      ui.showStatus(parts.join(" "), 5500);
+    } catch (error) {
+      console.warn("Could not import Ridge Trail progress backup", error);
+      ui.showStatus(
+        error instanceof SyntaxError
+          ? "That file is not a valid Ridge Trail Passport progress backup."
+          : error?.message || "Could not import that progress backup.",
+        5500
+      );
+    } finally {
+      fileInput.value = "";
+    }
+  });
+}
+
 function applyTrailFeatures(nextFeatures, { showQaWarning = false } = {}) {
   const previousCounty = $("county").value;
   const previousRegion = $("region").value;
@@ -356,6 +448,8 @@ async function initialize() {
     },
     isDone: (properties) => progressStore.isDone(properties)
   });
+
+  initializeProgressBackup();
 
   const cachedFeatures = await readCachedTrailFeatures();
 
