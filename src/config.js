@@ -37,12 +37,12 @@ export const CONFIG = {
   },
 
   imageryBasemap: {
-    name: "USGS Imagery Topo",
-    url: "https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}",
+    name: "USGS Imagery",
+    url: "https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}",
     maxNativeZoom: 16,
     maxZoom: 19,
     attribution:
-      '<a href="https://www.usgs.gov/programs/national-geospatial-program/national-map" target="_blank" rel="noopener noreferrer">USGS The National Map</a>: Orthoimagery and US Topo'
+      '<a href="https://www.usgs.gov/programs/national-geospatial-program/national-map" target="_blank" rel="noopener noreferrer">USGS The National Map</a>: Orthoimagery'
   },
 
   initialMap: {
