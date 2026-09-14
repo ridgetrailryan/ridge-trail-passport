@@ -12,7 +12,6 @@
   .mobile-panel-toggle span{display:block;transform:translateY(-2px);transition:transform .16s ease}
   #mobileBrowserContent,.sidebar-scroll{display:none}
   .map-actions{top:auto;right:14px;bottom:18px;gap:8px}
-  .basemap-control{margin-top:84px!important;margin-right:12px!important}
   .map-actions .danger{display:none}
   #homeBtn,#locateBtn{width:44px;height:44px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.97)}
   #homeBtn svg,#locateBtn svg{display:block;width:24px;height:24px;flex:0 0 auto}
