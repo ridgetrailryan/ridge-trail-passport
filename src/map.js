@@ -21,34 +21,10 @@ export function createRidgeMap({ onSelect, onBlankMapClick, isDone }) {
   const mobileViewportQuery = window.matchMedia?.("(max-width: 800px)");
   const isMobileViewport = () => Boolean(mobileViewportQuery?.matches);
 
-  const streetBasemap = L.tileLayer(CONFIG.basemap.url, {
+  L.tileLayer(CONFIG.basemap.url, {
     maxZoom: CONFIG.basemap.maxZoom,
     attribution: CONFIG.basemap.attribution
   }).addTo(map);
-
-  const imageryBasemap = L.tileLayer(CONFIG.imageryBasemap.url, {
-    maxNativeZoom: CONFIG.imageryBasemap.maxNativeZoom,
-    maxZoom: CONFIG.imageryBasemap.maxZoom,
-    attribution: CONFIG.imageryBasemap.attribution
-  });
-
-  const basemapControl = L.control.layers(
-    {
-      [CONFIG.basemap.name]: streetBasemap,
-      [CONFIG.imageryBasemap.name]: imageryBasemap
-    },
-    {},
-    {
-      position: isMobileViewport() ? "topright" : "bottomleft",
-      collapsed: true
-    }
-  ).addTo(map);
-
-  basemapControl.getContainer()?.classList.add("basemap-control");
-
-  mobileViewportQuery?.addEventListener?.("change", (event) => {
-    basemapControl.setPosition(event.matches ? "topright" : "bottomleft");
-  });
 
   const prefersReducedMotion =
     window.matchMedia?.("(prefers-reduced-motion: reduce)").matches || false;
