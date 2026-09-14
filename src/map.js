@@ -18,10 +18,28 @@ export function createRidgeMap({ onSelect, onBlankMapClick, isDone }) {
     keyboard: true
   }).setView(CONFIG.initialMap.center, CONFIG.initialMap.zoom);
 
-  L.tileLayer(CONFIG.basemap.url, {
+  const streetBasemap = L.tileLayer(CONFIG.basemap.url, {
     maxZoom: CONFIG.basemap.maxZoom,
     attribution: CONFIG.basemap.attribution
   }).addTo(map);
+
+  const imageryBasemap = L.tileLayer(CONFIG.imageryBasemap.url, {
+    maxNativeZoom: CONFIG.imageryBasemap.maxNativeZoom,
+    maxZoom: CONFIG.imageryBasemap.maxZoom,
+    attribution: CONFIG.imageryBasemap.attribution
+  });
+
+  L.control.layers(
+    {
+      [CONFIG.basemap.name]: streetBasemap,
+      [CONFIG.imageryBasemap.name]: imageryBasemap
+    },
+    {},
+    {
+      position: "topright",
+      collapsed: true
+    }
+  ).addTo(map);
 
   const prefersReducedMotion =
     window.matchMedia?.("(prefers-reduced-motion: reduce)").matches || false;
