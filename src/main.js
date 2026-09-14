@@ -224,14 +224,41 @@ function initializeProgressBackup() {
   const exportButton = $("exportProgressBtn");
   const importButton = $("importProgressBtn");
   const fileInput = $("progressFileInput");
+  const feedback = $("progressBackupStatus");
+  let feedbackTimer = null;
 
-  if (!exportButton || !importButton || !fileInput) return;
+  if (!exportButton || !importButton || !fileInput || !feedback) return;
+
+  function hideBackupFeedback() {
+    if (feedbackTimer) {
+      window.clearTimeout(feedbackTimer);
+      feedbackTimer = null;
+    }
+
+    feedback.hidden = true;
+    feedback.textContent = "";
+    feedback.classList.remove("is-error");
+  }
+
+  function showBackupFeedback(message, { isError = false } = {}) {
+    if (feedbackTimer) window.clearTimeout(feedbackTimer);
+
+    feedback.textContent = message;
+    feedback.classList.toggle("is-error", isError);
+    feedback.hidden = false;
+
+    feedbackTimer = window.setTimeout(() => {
+      hideBackupFeedback();
+    }, 7000);
+  }
 
   exportButton.addEventListener("click", () => {
     const backup = progressStore.exportData();
 
     if (backup.completed.length === 0) {
-      ui.showStatus("No completed sections to export yet.");
+      showBackupFeedback("No completed sections to export yet.", {
+        isError: true
+      });
       return;
     }
 
@@ -250,14 +277,15 @@ function initializeProgressBackup() {
     link.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 1000);
 
-    ui.showStatus(
-      `Exported ${backup.completed.length} completed section${
+    showBackupFeedback(
+      `✓ Exported ${backup.completed.length} completed section${
         backup.completed.length === 1 ? "" : "s"
       }.`
     );
   });
 
   importButton.addEventListener("click", () => {
+    hideBackupFeedback();
     fileInput.value = "";
     fileInput.click();
   });
@@ -267,7 +295,9 @@ function initializeProgressBackup() {
     if (!file) return;
 
     if (file.size > 1024 * 1024) {
-      ui.showStatus("That progress backup file is too large.", 4500);
+      showBackupFeedback("That progress backup file is too large.", {
+        isError: true
+      });
       fileInput.value = "";
       return;
     }
@@ -297,14 +327,14 @@ function initializeProgressBackup() {
         parts.push(`${result.skipped} invalid entr${result.skipped === 1 ? "y" : "ies"} skipped.`);
       }
 
-      ui.showStatus(parts.join(" "), 5500);
+      showBackupFeedback(`✓ ${parts.join(" ")}`);
     } catch (error) {
       console.warn("Could not import Ridge Trail progress backup", error);
-      ui.showStatus(
+      showBackupFeedback(
         error instanceof SyntaxError
           ? "That file is not a valid Ridge Trail Passport progress backup."
           : error?.message || "Could not import that progress backup.",
-        5500
+        { isError: true }
       );
     } finally {
       fileInput.value = "";
