@@ -16,7 +16,7 @@
   #homeBtn,#locateBtn,#helpBtn{width:44px;height:44px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,.97)}
   #homeBtn svg,#locateBtn svg,#helpBtn svg{display:block;width:24px;height:24px;flex:0 0 auto}
   #homeBtn span,#locateBtn span,#helpBtn span{display:none}
-  .map-hint{left:14px;right:14px;bottom:18px;transform:none;max-width:none;padding:8px 12px;font-size:12px;line-height:1.3;text-align:center}
+  .map-hint{left:50%;right:auto;bottom:18px;transform:translateX(-50%);width:min(320px,calc(100% - 40px));max-width:none;padding:8px 12px;font-size:12px;line-height:1.3;text-align:center}
   #app.mobile-panel-open aside{height:min(78dvh,680px);min-height:0;display:block;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
   #app.mobile-panel-open .brand{display:contents}
   #app.mobile-panel-open .brand-lockup{position:sticky;top:0;z-index:6;width:100%;height:64px;padding:7px 10px;gap:9px;background:rgba(255,255,255,.98);border-bottom:1px solid var(--line);box-shadow:0 2px 8px rgba(0,59,93,.06)}
