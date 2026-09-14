@@ -9,10 +9,22 @@
   "scope": "./",
   "icons": [
     {
-      "src": "./ridge-trail-logo.png",
+      "src": "./ridge-trail-app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./ridge-trail-app-icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "./ridge-trail-app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
