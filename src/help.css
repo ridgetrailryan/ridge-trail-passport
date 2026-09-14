@@ -16,6 +16,10 @@
 .help-install-card{border:1px solid var(--line);border-radius:13px;background:#FAFCFD;padding:12px 13px}
 .help-install-card h4{margin:0 0 7px;font-size:13px;color:var(--rt-dark-blue)}
 .help-install-card ol{margin:0;padding-left:19px;color:#385669;font-size:12.5px;line-height:1.55}
+.help-backup-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:11px}
+.help-backup-btn{border:1px solid #B8DEE6;border-radius:10px;padding:10px 12px;background:white;color:var(--rt-dark-blue);font-size:12.5px;font-weight:800}
+.help-backup-btn:hover{background:#F2FAFB;border-color:var(--rt-sky-blue)}
+.help-backup-note{margin-top:9px!important;color:var(--muted)!important;font-size:12px!important}
 .help-companion-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
 .help-companion-card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:13px;background:#FAFCFD;padding:13px}
 .help-companion-card h4{margin:0 0 5px;font-size:13px;color:var(--rt-dark-blue)}
@@ -34,5 +38,5 @@
   .help-panel{width:100%;max-height:min(78dvh,680px);border-radius:18px;padding:20px 18px 18px}
   .help-panel h2{font-size:23px}
   .help-intro{margin-bottom:16px}
-  .help-install-grid,.help-companion-grid{grid-template-columns:1fr}
+  .help-install-grid,.help-backup-actions,.help-companion-grid{grid-template-columns:1fr}
 }
