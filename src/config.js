@@ -36,15 +36,6 @@ export const CONFIG = {
       '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'
   },
 
-  imageryBasemap: {
-    name: "USGS Imagery",
-    url: "https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}",
-    maxNativeZoom: 16,
-    maxZoom: 19,
-    attribution:
-      '<a href="https://www.usgs.gov/programs/national-geospatial-program/national-map" target="_blank" rel="noopener noreferrer">USGS The National Map</a>: Orthoimagery'
-  },
-
   initialMap: {
     center: [37.8, -122.15],
     zoom: 9
