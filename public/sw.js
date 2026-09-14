@@ -1,6 +1,13 @@
 const CACHE_PREFIX = "ridge-trail-passport-shell-";
-const CACHE_NAME = `${CACHE_PREFIX}v1`;
-const CORE_ASSETS = ["./", "./manifest.webmanifest", "./ridge-trail-logo.png"];
+const CACHE_NAME = `${CACHE_PREFIX}v2`;
+const CORE_ASSETS = [
+  "./",
+  "./manifest.webmanifest",
+  "./ridge-trail-logo.png",
+  "./ridge-trail-app-icon-180.png",
+  "./ridge-trail-app-icon-192.png",
+  "./ridge-trail-app-icon-512.png"
+];
 
 async function cacheAppShell() {
   const cache = await caches.open(CACHE_NAME);
