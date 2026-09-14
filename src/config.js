@@ -29,11 +29,20 @@ export const CONFIG = {
   requestTimeoutMs: 15000,
 
   basemap: {
-    name: "OpenStreetMap Standard",
+    name: "OpenStreetMap",
     url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
     maxZoom: 19,
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors'
+  },
+
+  imageryBasemap: {
+    name: "USGS Imagery Topo",
+    url: "https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}",
+    maxNativeZoom: 16,
+    maxZoom: 19,
+    attribution:
+      '<a href="https://www.usgs.gov/programs/national-geospatial-program/national-map" target="_blank" rel="noopener noreferrer">USGS The National Map</a>: Orthoimagery and US Topo'
   },
 
   initialMap: {
