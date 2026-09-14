@@ -1,6 +1,10 @@
 import { CONFIG } from "./config.js";
 import { isCompletionEligible, milesFor } from "./trails.js";
 
+const BACKUP_APP_NAME = "Ridge Trail Passport";
+const BACKUP_VERSION = 1;
+const STORAGE_KEY_PREFIX = "segment-";
+
 function segmentIdFor(properties = {}) {
   return String(properties.Segment_ID || "").trim();
 }
@@ -27,6 +31,11 @@ function loadProgress(storage) {
   }
 }
 
+function completedAtFor(value, fallback = new Date().toISOString()) {
+  if (typeof value !== "string" || !value.trim()) return fallback;
+  return Number.isNaN(Date.parse(value)) ? fallback : value;
+}
+
 export function createProgressStore({ storage = defaultStorage() } = {}) {
   let progress = loadProgress(storage);
   let invalidSegmentIds = new Set();
@@ -38,7 +47,7 @@ export function createProgressStore({ storage = defaultStorage() } = {}) {
       return null;
     }
 
-    return `segment-${segmentId}`;
+    return `${STORAGE_KEY_PREFIX}${segmentId}`;
   }
 
   function persist() {
@@ -87,6 +96,71 @@ export function createProgressStore({ storage = defaultStorage() } = {}) {
 
       persist();
       return Boolean(progress[key]);
+    },
+
+    exportData() {
+      const completed = Object.entries(progress)
+        .filter(([key, value]) =>
+          key.startsWith(STORAGE_KEY_PREFIX) && value && typeof value === "object"
+        )
+        .map(([key, value]) => ({
+          segmentId: key.slice(STORAGE_KEY_PREFIX.length),
+          completedAt: completedAtFor(value.completedAt)
+        }))
+        .filter((entry) => entry.segmentId)
+        .sort((a, b) => a.segmentId.localeCompare(b.segmentId));
+
+      return {
+        app: BACKUP_APP_NAME,
+        version: BACKUP_VERSION,
+        exportedAt: new Date().toISOString(),
+        completed
+      };
+    },
+
+    importData(data) {
+      if (
+        !data ||
+        typeof data !== "object" ||
+        Array.isArray(data) ||
+        data.app !== BACKUP_APP_NAME ||
+        data.version !== BACKUP_VERSION ||
+        !Array.isArray(data.completed)
+      ) {
+        throw new Error("This is not a valid Ridge Trail Passport progress backup.");
+      }
+
+      let added = 0;
+      let existing = 0;
+      let skipped = 0;
+      const seen = new Set();
+      const fallbackCompletedAt = new Date().toISOString();
+
+      for (const entry of data.completed) {
+        const segmentId = String(entry?.segmentId ?? "").trim();
+
+        if (!segmentId || seen.has(segmentId) || invalidSegmentIds.has(segmentId)) {
+          skipped += 1;
+          continue;
+        }
+
+        seen.add(segmentId);
+        const key = `${STORAGE_KEY_PREFIX}${segmentId}`;
+
+        if (progress[key]) {
+          existing += 1;
+          continue;
+        }
+
+        progress[key] = {
+          completedAt: completedAtFor(entry?.completedAt, fallbackCompletedAt)
+        };
+        added += 1;
+      }
+
+      const saved = added === 0 || persist();
+
+      return { added, existing, skipped, saved };
     },
 
     reset() {
