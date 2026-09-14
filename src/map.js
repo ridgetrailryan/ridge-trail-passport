@@ -18,6 +18,9 @@ export function createRidgeMap({ onSelect, onBlankMapClick, isDone }) {
     keyboard: true
   }).setView(CONFIG.initialMap.center, CONFIG.initialMap.zoom);
 
+  const mobileViewportQuery = window.matchMedia?.("(max-width: 800px)");
+  const isMobileViewport = () => Boolean(mobileViewportQuery?.matches);
+
   const streetBasemap = L.tileLayer(CONFIG.basemap.url, {
     maxZoom: CONFIG.basemap.maxZoom,
     attribution: CONFIG.basemap.attribution
@@ -29,17 +32,23 @@ export function createRidgeMap({ onSelect, onBlankMapClick, isDone }) {
     attribution: CONFIG.imageryBasemap.attribution
   });
 
-  L.control.layers(
+  const basemapControl = L.control.layers(
     {
       [CONFIG.basemap.name]: streetBasemap,
       [CONFIG.imageryBasemap.name]: imageryBasemap
     },
     {},
     {
-      position: "topright",
+      position: isMobileViewport() ? "topright" : "bottomleft",
       collapsed: true
     }
   ).addTo(map);
+
+  basemapControl.getContainer()?.classList.add("basemap-control");
+
+  mobileViewportQuery?.addEventListener?.("change", (event) => {
+    basemapControl.setPosition(event.matches ? "topright" : "bottomleft");
+  });
 
   const prefersReducedMotion =
     window.matchMedia?.("(prefers-reduced-motion: reduce)").matches || false;
@@ -80,9 +89,6 @@ export function createRidgeMap({ onSelect, onBlankMapClick, isDone }) {
   const useLargeTouchTargets =
     window.matchMedia?.("(pointer: coarse)").matches ||
     navigator.maxTouchPoints > 0;
-
-  const isMobileViewport = () =>
-    window.matchMedia?.("(max-width: 800px)").matches;
 
   let geoLayer = null;
   let touchTargetLayer = null;
