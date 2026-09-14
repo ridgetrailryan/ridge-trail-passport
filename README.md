@@ -49,7 +49,8 @@ Completion is stored only in the visitor's current browser/device using `localSt
 - There are no Passport user accounts.
 - Completion is not sent to the repository or an application database.
 - Clearing browser data can erase saved completion progress.
-- Progress does not currently sync across devices.
+- Progress does not automatically sync across devices.
+- Users can manually export a versioned JSON progress backup and import it on another browser, device, or Passport web address. Imports merge with existing progress and do not remove completed sections.
 
 ## Deployment
 
@@ -59,7 +60,7 @@ The Vite build uses relative asset paths so the project works at the repository 
 
 ## Current beta limitations
 
-- No user accounts or cross-device sync
+- No user accounts or automatic cross-device sync
 - No offline basemap support
 - OpenStreetMap Standard public tiles are for normal interactive viewing only; bulk/offline tile downloading should not be added
 - No dedicated client-side error-monitoring service
